@@ -14,7 +14,7 @@ var Intercooler = Intercooler || (function () {
   // Vars
   //--------------------------------------------------
 
-  var _MACROS = ['ic-get-from', 'ic-post-to', 'ic-put-to', 'ic-delete-from',
+  var _MACROS = ['ic-get-from', 'ic-get', 'ic-post-to', 'ic-put-to', 'ic-delete-from',
                  'ic-style-src', 'ic-attr-src', 'ic-prepend-from', 'ic-append-from'];
 
   var _remote = $;
@@ -27,7 +27,7 @@ var Intercooler = Intercooler || (function () {
   // Base Transition Definitions
   //============================================================
   var _transitions = {};
-  var _defaultTransition = 'fadeFast';
+  var _defaultTransition = 'none';
   function _defineTransition(name, def) {
     if(def.newContent == null) {
       //noinspection JSUnusedLocalSymbols
@@ -607,7 +607,7 @@ var Intercooler = Intercooler || (function () {
   }
 
   function preventDefault(elt) {
-    return elt.is('form') || (elt.is(':submit') && elt.closest('form').length == 1);
+    return elt.is("[ic-get]") || elt.is('form') || (elt.is(':submit') && elt.closest('form').length == 1);
   }
 
   function handleTriggerOn(elt) {
@@ -669,6 +669,10 @@ var Intercooler = Intercooler || (function () {
     }
     if(macro == 'ic-get-from') {
       setIfAbsent(elt, 'ic-src', elt.attr('ic-get-from'));
+      setIfAbsent(elt, 'ic-trigger-on', 'default');
+      setIfAbsent(elt, 'ic-deps', 'ignore');
+    }
+    if(macro == 'ic-get') {
       setIfAbsent(elt, 'ic-src', elt.attr('href'));
       setIfAbsent(elt, 'ic-trigger-on', 'default');
       setIfAbsent(elt, 'ic-deps', 'ignore');
@@ -707,7 +711,7 @@ var Intercooler = Intercooler || (function () {
   }
 
   function setIfAbsent(elt, attr, value) {
-    if((elt.attr(attr) == null) && (value != '')) {
+    if(elt.attr(attr) == null) {
       elt.attr(attr, value);
     }
   }
@@ -750,7 +754,7 @@ var Intercooler = Intercooler || (function () {
   function parseICResponse(newContent, elt) {
     if (newContent && /\S/.test(newContent)) {
       var newContentWrapped = $("<div></div>").html(newContent);
-      ic_blocks = newContentWrapped.find(".ic-destination");
+      ic_blocks = newContentWrapped.find("[ic-destination]");
       if (ic_blocks.length > 0)
       {
         $(ic_blocks).each(function( index ) {

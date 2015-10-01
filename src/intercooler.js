@@ -445,6 +445,9 @@ var Intercooler = Intercooler || (function () {
     if (elt.attr('name')) {
       str += "&ic-element-name=" + elt.attr('name');
     }
+    if (elt.attr('value')) {
+      str += "&ic-element-value=" + elt.attr('value');
+    }
     if (target.attr('ic-id')) {
       str += "&ic-id=" + target.attr('ic-id');
     }
